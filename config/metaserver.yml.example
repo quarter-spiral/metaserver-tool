@@ -1,0 +1,9 @@
+---
+base_port: 13000
+apps:
+  auth:
+    path: ../some_auth_system
+    variable: OAUTH_URL
+  some_other_app:
+    path: ../some_other_app
+    variable: OTHER_APP_URL

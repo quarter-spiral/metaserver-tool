@@ -1,0 +1,27 @@
+<h1>Server</h1>
+
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>App</th>
+      <th>URL</th>
+      <th>Status</th>
+      <th>Tools</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% apps.each do |app| %>
+      <tr>
+        <td><%= app.name %></td>
+        <td><a href="<%= app.url %>"><%= app.url %></a></td>
+        <td><div class="status <%= app.up? ? 'up' : 'down' %>"></div></td>
+        <td>
+          <% app_id = URI.escape(app.name) %>
+          <a href="/restart/<%= app_id %>">Restart</a>
+          |
+          <a href="/logs/<%= app_id %>">Logs</a>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

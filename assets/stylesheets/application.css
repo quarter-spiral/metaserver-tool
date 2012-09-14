@@ -1,0 +1,11 @@
+.status {
+  width:26px;
+  height: 26px;
+  background-image: url('/images/status.png');
+
+  margin: auto;
+}
+
+.status.down {
+  background-position-y: 52px;
+}
