@@ -22,6 +22,8 @@ module Metaserver::Tool
       # prepare tmp dir
       Dir.mkdir(TMP_PATH) unless File.exist?(TMP_PATH)
 
+      Dir[File.join(TMP_PATH, '*.log')].each {|f| File.delete f}
+
       at_exit do
         unless $nopid_deletion
           threads = []

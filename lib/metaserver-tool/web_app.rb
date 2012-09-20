@@ -15,6 +15,9 @@ module Metaserver::Tool
         stream(:keep_open) do |out|
           out << erb(:log_header, layout: false, locals: {filename: filename})
           log = File.open(filename, 'r')
+          while !log.eof?
+            out << log.read_nonblock(16384)
+          end
           EventMachine::PeriodicTimer.new(1) do
             out << log.read_nonblock(16384) unless log.eof?
           end
