@@ -1,4 +1,5 @@
 require 'timeout'
+require 'eventmachine'
 
 module Metaserver::Tool
   class WebApp < Sinatra::Base
@@ -6,6 +7,20 @@ module Metaserver::Tool
 
     get '/' do
       erb :index, locals: {apps: config.apps}
+    end
+
+    helpers do
+      def stream_log(filename)
+        content_type :txt
+        stream(:keep_open) do |out|
+          log = File.open(filename, 'r')
+          read_chunk = proc do
+            out << log.read_nonblock(128) unless log.eof?
+            EM.next_tick(read_chunk)
+          end
+          EM.next_tick(read_chunk)
+        end
+      end
     end
 
     get '/restart/:app' do
@@ -30,12 +45,18 @@ module Metaserver::Tool
       redirect '/'
     end
 
+    get '/logs' do
+      metaserver_log = File.expand_path('../../../tmp/metaserver.log', __FILE__)
+
+      stream_log(metaserver_log)
+    end
+
     get '/logs/:app' do
       name = URI.unescape(params[:app])
       app = config.apps.detect {|a| a.name == name}
       raise "App #{name} not found!" unless app
 
-      send_file app.log_file
+      stream_log(app.log_file)
     end
 
     def config
