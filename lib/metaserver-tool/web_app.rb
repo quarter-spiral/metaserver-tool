@@ -11,14 +11,13 @@ module Metaserver::Tool
 
     helpers do
       def stream_log(filename)
-        content_type :txt
+        content_type :html
         stream(:keep_open) do |out|
+          out << erb(:log_header, layout: false, locals: {filename: filename})
           log = File.open(filename, 'r')
-          read_chunk = proc do
-            out << log.read_nonblock(128) unless log.eof?
-            EM.next_tick(read_chunk)
+          EventMachine::PeriodicTimer.new(1) do
+            out << log.read_nonblock(16384) unless log.eof?
           end
-          EM.next_tick(read_chunk)
         end
       end
     end
@@ -41,6 +40,16 @@ module Metaserver::Tool
         # and show green lights directly when he comes back to the
         # dashboard
       end
+
+      redirect '/'
+    end
+
+    get '/stop/:app' do
+      name = URI.unescape(params[:app])
+      app = config.apps.detect {|a| a.name == name}
+      raise "App #{name} not found!" unless app
+
+      app.stop!
 
       redirect '/'
     end

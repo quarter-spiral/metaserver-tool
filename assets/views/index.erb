@@ -17,6 +17,8 @@
         <td><div class="status <%= app.up? ? 'up' : 'down' %>"></div></td>
         <td>
           <% app_id = URI.escape(app.name) %>
+          <a href="/stop/<%= app_id %>">Stop</a>
+          |
           <a href="/restart/<%= app_id %>">Restart</a>
           |
           <a href="/logs/<%= app_id %>">Logs</a>
