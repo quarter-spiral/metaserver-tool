@@ -104,17 +104,21 @@ module Metaserver::Tool
       File.expand_path('./config.ru', @path)
     end
 
-    def kill_by_pid_file!
+    def kill_by_pid_file!(hardcore = false)
       return unless pid
 
       Timeout::timeout(10) {
         while pid
-          Process.kill("TERM", pid)
+          Process.kill(hardcore ? "KILL" : "TERM", pid)
           sleep 2
         end
       }
     rescue Timeout::Error
-      raise "Can't stop the pid #{pid} of app #{name}. Timed out. Aborting!"
+      if hardcore
+        raise "Can't stop the pid #{pid} of app #{name}. Timed out. Aborting!"
+      else
+        kill_by_pid_file!(true)
+      end
     rescue Errno::ESRCH
       # good, process is dead
     end
