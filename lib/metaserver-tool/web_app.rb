@@ -3,6 +3,7 @@ require 'eventmachine'
 
 module Metaserver::Tool
   class WebApp < Sinatra::Base
+    extend Rack::Utils
     set :views, File.expand_path('../../assets/views', File.dirname(__FILE__))
 
     get '/' do
@@ -16,10 +17,10 @@ module Metaserver::Tool
           out << erb(:log_header, layout: false, locals: {filename: filename})
           log = File.open(filename, 'r')
           while !log.eof?
-            out << log.read_nonblock(16384)
+            out << escape_html(log.read_nonblock(16384))
           end
           EventMachine::PeriodicTimer.new(1) do
-            out << log.read_nonblock(16384) unless log.eof?
+            out << escape_html(log.read_nonblock(16384)) unless log.eof?
           end
         end
       end
