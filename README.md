@@ -24,3 +24,9 @@ Now open http://localhost:9292 to see where all your apps have been
 booted to and to restart them when necessary.
 
 Stop the server with ``ctrl + c``.
+
+You can set a name for your ``localhost`` that is then used in the server. Example:
+
+``
+bundle exec rackup METASERVER_HOST=yourname.local
+``

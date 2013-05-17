@@ -31,8 +31,12 @@ module Metaserver::Tool
       kill_by_pid_file!
     end
 
+    def host
+      ENV['METASERVER_HOST'] || 'localhost'
+    end
+
     def url
-      "http://localhost:#{port}/"
+      "http://#{host}:#{port}/"
     end
 
     def up?
