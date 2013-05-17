@@ -28,5 +28,5 @@ Stop the server with ``ctrl + c``.
 You can set a name for your ``localhost`` that is then used in the server. Example:
 
 ``
-bundle exec rackup METASERVER_HOST=yourname.local
+METASERVER_HOST=yourname.local bundle exec rackup
 ``
