@@ -8,7 +8,7 @@ module Metaserver::Tool
     end
 
     def variables
-      Hash[apps.map {|app| [app.variable, app.url] if app.variable}.compact]
+      Hash[apps.map {|app| [app.variable, app.url.gsub(/\/$/, '')] if app.variable}.compact]
     end
 
     protected
