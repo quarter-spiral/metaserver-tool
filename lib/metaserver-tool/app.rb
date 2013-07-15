@@ -62,7 +62,7 @@ module Metaserver::Tool
 
         variables = @config.variables.map {|variable, value| "#{variable}=\"#{value}\""}.join(" ")
 
-        command = "/bin/bash -l -c 'cd #{project_path}; RUNS_ON_METASERVER=1 #{variables} bundle exec rackup -p #{@port}  -O --threaded > #{log_file} 2> #{log_file} & echo \\$! > #{pid_file}; wait \\$!'"
+        command = "/bin/bash -l -c 'cd #{project_path}; RUNS_ON_METASERVER=1 #{variables} bundle exec thin -p #{@port} --threaded --no-epoll --trace start > #{log_file} 2> #{log_file} & echo \\$! > #{pid_file}; wait \\$!'"
         puts "Running #{command}"
         `ssh -i ~/.ssh/#{key_file} localhost "#{command}"`
 
